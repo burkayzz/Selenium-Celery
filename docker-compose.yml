@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:15.6
+    environment:
+      POSTGRES_DB: otonom
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: burkay123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+     - findernetwork
+  
+  web:
+    build: .
+    command: gunicorn otonom.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - rabbitmq
+      - selenium-hub
+    environment:
+      - SELENIUM_URL=http://selenium-hub:4444/wd/hub
+      - DATABASE_URL=postgres://postgres:burkay123@db:5432/otonom
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=587
+      - EMAIL_USE_TLS=True
+    networks:
+     - findernetwork
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+     - findernetwork
+
+  selenium-hub:
+    image: selenium/hub:latest
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+    networks:
+      - findernetwork
+
+  chrome-node-1:
+    image: selenium/node-chrome:latest
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PORT=4442
+      - SE_EVENT_BUS_PUBLISH_PORT=4443
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4444
+    networks:
+      - findernetwork
+    volumes:
+      - /dev/shm:/dev/shm
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+     - findernetwork
+
+  celery:
+    build: .
+    command: celery -A finder.celery_conf worker --pool=solo -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      DATABASE_URL: postgres://postgres:burkay123@db:5432/otonom
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: rpc://
+      LANG:C: UTF-8
+      LC_ALL: C.UTF-8
+    networks:
+     - findernetwork
+
+  celery-beat:
+    build: .
+    command: celery -A finder.celery_conf beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      DATABASE_URL: postgres://postgres:burkay123@db:5432/otonom
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: rpc://
+    networks:
+     - findernetwork
+
+  
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  findernetwork:
+    driver: bridge
