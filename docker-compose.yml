@@ -99,6 +99,41 @@ services:
     networks:
      - findernetwork
 
+
+  celery-worker-queue-1:
+    build: .
+    command: celery -A finder.celery_conf worker --pool=solo -l info -Q high_priority
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      DATABASE_URL: postgres://postgres:burkay123@db:5432/otonom
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: rpc://
+      LANG:C: UTF-8
+      LC_ALL: C.UTF-8
+    networks:
+     - findernetwork
+
+  celery-worker-queue-2:
+    build: .
+    command: celery -A finder.celery_conf worker --pool=solo -l info -Q low_priority
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      DATABASE_URL: postgres://postgres:burkay123@db:5432/otonom
+      CELERY_BROKER_URL: amqp://guest:guest@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: rpc://
+      LANG:C: UTF-8
+      LC_ALL: C.UTF-8
+    networks:
+     - findernetwork
+
   celery-beat:
     build: .
     command: celery -A finder.celery_conf beat -l info

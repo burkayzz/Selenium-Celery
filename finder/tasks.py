@@ -24,7 +24,7 @@ def trends_task():
     subject = "X - TOP TWEETS"
     to_email = "" # Alıcı mail hesabını giriniz..
     
-    mailing_task.apply_async(args=[subject, to_email], countdown=10)
+    mailing_task.apply_async(args=[subject, to_email], queue = 'high_priority',countdown=10)
 
 @shared_task
 def mailing_task(subject,  to_email):
