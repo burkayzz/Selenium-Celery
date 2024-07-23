@@ -29,7 +29,7 @@ class SearchResult(models.Model):
 class Agenda(models.Model):
     
     title = models.CharField(max_length=100)
-    share = models.CharField(max_length=35)
+    share = models.CharField(max_length=100)
     checkedDate = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
