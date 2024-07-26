@@ -6,3 +6,4 @@ amqp
 dj-database-url
 selenium
 webdriver-manager
+flower

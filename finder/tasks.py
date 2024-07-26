@@ -33,7 +33,7 @@ def mailing_task(subject,  to_email):
     today = datetime.now().date()   
     trends = Agenda.objects.filter(checkedDate__date = today)
     
-    body = "GUNDEMI YAKINDAN TAKIP ET   Iste gunun gundemleri"
+    body = "GUNDEMI YAKINDAN TAKIP ET   Iste günün trendleri"
     
     for a in trends:
         body += f"{a.title}\n"
