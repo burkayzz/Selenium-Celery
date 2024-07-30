@@ -1,3 +1,6 @@
+Bu Repo Celery-Selenium-Rabbitmq Kullanımı amacıyla birden fazla proje içermektedir 
+
+
 1. Sel Projesi
    Proje veritabanındaki keywordler üzerinden ekşisözlükte arama yapar. Keyworde karşılık gelen aramalar içerisinde ilk 3 sayfa içerisinde paylaşımları ve buna dair bilgileri toplar ve veritabanına kaydeder.
    İlk 4 arama için bu veriyi yeni sayar fakat daha fazlası için bu verilerin yeniliği kaybolur.
