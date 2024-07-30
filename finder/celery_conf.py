@@ -63,7 +63,7 @@ app.conf.beat_schedule = {
         'options':{
             'queue':'high_priority',   
                    } 
-    },
+    }, 
     
     'forex': {
         'task': 'finder.tasks.forex',
