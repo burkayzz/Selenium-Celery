@@ -4,7 +4,8 @@ import time
 from .models import Keyword,SearchResult,Agenda
 from django.core.exceptions import ObjectDoesNotExist
 from selenium.common.exceptions import NoSuchElementException
-
+import requests
+import subprocess
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--headless')
@@ -100,8 +101,6 @@ def sel():
         
     browser.close()
     
-def cleaner():
-    pass
     
 def trends():
     
@@ -192,3 +191,35 @@ def trends():
     time.sleep(7)
     
     browser.close()
+    
+    
+def exchange():
+    
+    base_currency = 'TRY'
+    target_currencies = ['USD', 'EUR']
+
+    api_key = '' # API Key'inizi giriniz (Bu uygulama 'Alpha Vantage APİ' kullanmaktadır)
+    exchanges = {}
+
+    for target_currencie in target_currencies:
+
+        url = f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={target_currencie}&to_currency={base_currency}&apikey={api_key}'
+
+        result = requests.get(url)
+        data = result.json()
+
+        exchange_rate = data.get('Realtime Currency Exchange Rate', {}).get('5. Exchange Rate')
+
+
+        exchanges[target_currencie] = exchange_rate
+
+
+    return exchanges
+
+def set_light_theme():
+    subprocess.run(["reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "/v", "AppsUseLightTheme", "/t", "REG_DWORD", "/d", "1", "/f"])
+    subprocess.run(["reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "/v", "SystemUsesLightTheme", "/t", "REG_DWORD", "/d", "1", "/f"])
+
+def set_dark_theme():
+    subprocess.run(["reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "/v", "AppsUseLightTheme", "/t", "REG_DWORD", "/d", "0", "/f"])
+    subprocess.run(["reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "/v", "SystemUsesLightTheme", "/t", "REG_DWORD", "/d", "0", "/f"])

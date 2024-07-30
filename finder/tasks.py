@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from celery import shared_task
 from django.http import HttpResponse
-from .funcs import sel,trends
+from .funcs import sel,trends,exchange,set_dark_theme,set_light_theme
 from finder.celery_conf import app
 import time
 from selenium import webdriver
@@ -24,15 +24,32 @@ def trends_task():
     subject = "X - TOP TWEETS"
     to_email = "" # Alıcı mail hesabını giriniz..
     
-    mailing_task.apply_async(args=[subject, to_email], queue = 'high_priority',countdown=10)
+    mailing_task_for_x.apply_async(args=[subject, to_email], queue = 'high_priority',countdown=10)
+
 
 @shared_task
-def mailing_task(subject,  to_email):
+def forex():
+
+    everybody = "the mail to everybody" #Burada veritabanınızdaki veya sabit mail almasını beklediğiniz mailleri veriniz
+    exchange_rates = exchange()
+    date = datetime.now()
+    body = "Güncel EUR/USD Kurları\n"
+    
+    for currency, rate in exchange_rates.items():
+        body += f"{currency} = {rate} ₺\n"
+    
+    body += f"Tarih: {date.strftime('%Y-%m-%d %H:%M:%S')}"
+    subject = "Güncel Kurlar"
+    
+    send_email(subject=subject, body=body, to_email=everybody)
+
+@shared_task
+def mailing_task_for_x(to_email):
     print("Mail Görevi Çalıştı")
     
     today = datetime.now().date()   
     trends = Agenda.objects.filter(checkedDate__date = today)
-    
+    subject = "TRENDS İN X"
     body = "GUNDEMI YAKINDAN TAKIP ET   Iste günün trendleri"
     
     for a in trends:
@@ -44,3 +61,11 @@ def mailing_task(subject,  to_email):
     send_email(subject=subject, body=body, to_email=to_email)
     
     
+@shared_task
+def light_theme():
+    set_light_theme()
+    
+@shared_task
+def dark_theme():
+    print("Çalıştı")
+    set_dark_theme()

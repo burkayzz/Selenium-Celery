@@ -34,13 +34,44 @@ app.conf.beat_schedule = {
         'task': 'finder.tasks.sell',
         'schedule': crontab(hour=9, minute=0),
                     # timedelta(minutes=5),
-        'options':{'queue':'low_priority'}               
+        'options':{
+            'queue':'low_priority'
+            }               
     },
+    
+    'light_theme_task':{
+        'task':'finder.tasks.light_theme',
+        'schedule': crontab(hour=9),
+        'options':{
+            'queue':'low_priority',
+        }
+    }
+    ,
+    
+    'dark_theme_task':{
+        'task':'finder.tasks.dark_theme',
+        'schedule': crontab(hour=18),
+        'options':{
+            'queue':'low_priority',
+        }
+    }
+    ,
     
     'trends_task': {
         'task': 'finder.tasks.trends_task',
         'schedule': crontab(hour=8, minute=0),
-        'options':{'queue':'high_priority'} ,
+        'options':{
+            'queue':'high_priority',   
+                   } 
+    },
+    
+    'forex': {
+        'task': 'finder.tasks.forex',
+        'schedule': crontab(minute='*/15', hour='10-18'),
+        'options':{
+            'queue':'high_priority',
+            'priority':2
+        }
     }
 }
 
