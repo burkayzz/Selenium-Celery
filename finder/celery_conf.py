@@ -50,7 +50,7 @@ app.conf.beat_schedule = {
     
     'dark_theme_task':{
         'task':'finder.tasks.dark_theme',
-        'schedule': crontab(hour=18),
+        'schedule': crontab(hour=20),
         'options':{
             'queue':'low_priority',
         }
@@ -67,7 +67,7 @@ app.conf.beat_schedule = {
     
     'forex': {
         'task': 'finder.tasks.forex',
-        'schedule': crontab(minute='*/15', hour='10-18'),
+        'schedule': crontab(minute='*/15', hour='10-18', day_of_week='1-5'),
         'options':{
             'queue':'high_priority',
             'priority':2
