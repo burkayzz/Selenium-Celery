@@ -223,3 +223,25 @@ def set_light_theme():
 def set_dark_theme():
     subprocess.run(["reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "/v", "AppsUseLightTheme", "/t", "REG_DWORD", "/d", "0", "/f"])
     subprocess.run(["reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "/v", "SystemUsesLightTheme", "/t", "REG_DWORD", "/d", "0", "/f"])
+
+def amazons_deals():
+    
+    browser = webdriver.Chrome(options=chrome_options)   
+    time.sleep(2)
+    
+    url = "https://www.amazon.com.tr/deals?ref_=nav_cs_gb&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522refinementFilters%255C%2522%253A%257B%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522"
+    
+    time.sleep(3)
+    browser.get(url)
+    time.sleep(3)
+    
+    products = browser.find_elements(by="css selector", value=".a-spacing-mini.ProductCard-module__title_awabIOxk6xfKvxKcdKDH")
+    
+    products_list = []
+    
+    for p in products:
+        products_list.append(p.text)
+        
+    browser.close()
+    
+    return products_list

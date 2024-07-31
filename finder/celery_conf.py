@@ -72,6 +72,14 @@ app.conf.beat_schedule = {
             'queue':'high_priority',
             'priority':2
         }
+    },
+    
+    'deals_for_amazon':{
+        'task':'finder.tasks.deals_for_amazon',
+        'schedule': crontab(hour=10),
+        'options':{
+            'queue':'low_priority'
+        }
     }
 }
 

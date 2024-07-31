@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from celery import shared_task
 from django.http import HttpResponse
-from .funcs import sel,trends,exchange,set_dark_theme,set_light_theme
+from .funcs import sel,trends,exchange,set_dark_theme,set_light_theme,amazons_deals
 from finder.celery_conf import app
 import time
 from selenium import webdriver
@@ -69,3 +69,25 @@ def light_theme():
 def dark_theme():
     print("Çalıştı")
     set_dark_theme()
+
+
+@shared_task
+def deals_for_amazon():
+    print("firsatlar")
+    products = amazons_deals()
+    
+    to_email = "Lütfen alıcı maili giriniz..."
+    
+    date = datetime.now
+    
+    
+    subject = "AMAZONDA GÜNÜN FIRSATLARINI KAÇIRMA"
+    body = "İşte günün fırsatlarından bazıları\n"
+    
+    for p in products:
+        
+        body += f"-{p} \n"
+        
+    body += "(Fırsat ürünlerdeki indirim saat 23.00'a kadar geçerlidir..)\nHemen Alışverişe Başla.."
+    
+    send_email(subject=subject, body=body, to_email=to_email)

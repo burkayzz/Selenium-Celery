@@ -14,3 +14,6 @@ Bu Repo Celery-Selenium-Rabbitmq Kullanımı amacıyla birden fazla proje içerm
 4. Set theme Projesi
    Saat 20.00'da windowsun temasını göz sağlığını korumak adına karanlık moda alır - Saat 09.00'da ise windowsun temasını aydınlık moda alır ve kullanıcı deneyimini zenginleştirir.
    ( Proje windows tabanlı olması sebebiyle docker üzerinde çalışmayan komut setlerine sahiptir yalnızca demodur ) 
+
+5. Amazon Deals Projesi
+   Amazonda günün fırsatlarını kullanıcıya mail ile bildirir.
